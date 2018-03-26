@@ -308,6 +308,7 @@ private:
   std::string combinedSVPosBJetTags_;
 
 	std::string deepFlavourJetTags_;
+	std::string deepFlavourNegJetTags_;
 
 	std::string deepCSVBJetTags_;
 	std::string deepCSVNegBJetTags_;
@@ -336,6 +337,9 @@ private:
   std::string cMVAv2BJetTags_;
   std::string cMVAv2NegBJetTags_;
   std::string cMVAv2PosBJetTags_;
+
+  std::string deepCSVTagInfos_;
+  std::string deepCSVNegTagInfos_;
 
   std::string deepFlavourTagInfos_;
   std::string ipTagInfos_;
@@ -648,7 +652,7 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   combinedSVPosBJetTags_  = iConfig.getParameter<std::string>("combinedSVPosBJetTags");
 
 	deepFlavourJetTags_ = iConfig.getParameter<std::string>("deepFlavourJetTags");
-
+	deepFlavourNegJetTags_ = iConfig.getParameter<std::string>("deepFlavourNegJetTags");
 	deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
 	deepCSVNegBJetTags_ = iConfig.getParameter<std::string>("deepCSVNegBJetTags");
 	deepCSVPosBJetTags_ = iConfig.getParameter<std::string>("deepCSVPosBJetTags");
@@ -671,8 +675,11 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
   cMVAv2BJetTags_ = iConfig.getParameter<std::string>("cMVAv2BJetTags");
   cMVAv2NegBJetTags_ = iConfig.getParameter<std::string>("cMVAv2NegBJetTags");
   cMVAv2PosBJetTags_ = iConfig.getParameter<std::string>("cMVAv2PosBJetTags");
-
-  deepFlavourTagInfos_     = iConfig.getParameter<std::string>("deepFlavourTagInfos");
+  deepFlavourTagInfos_     = iConfig.getParameter<std::string>("pfDeepFlavour");
+  //deepFlavourTagInfos_     = iConfig.getParameter<std::string>("deepFlavourTagInfos");
+  deepCSVTagInfos_     = iConfig.getParameter<std::string>("deepCSVTagInfos");
+  //deepCSVNegTagInfos_     = iConfig.getParameter<std::string>("deepCSVNegTagInfos");
+  deepCSVNegTagInfos_     = iConfig.getParameter<std::string>("pfDeepCSVNegative");
   ipTagInfos_              = iConfig.getParameter<std::string>("ipTagInfos");
   svTagInfos_              = iConfig.getParameter<std::string>("svTagInfos");
   svNegTagInfos_           = iConfig.getParameter<std::string>("svNegTagInfos");
@@ -1732,7 +1739,9 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
   JetInfo[iJetColl].nTrkTagVar = 0;
   JetInfo[iJetColl].nSVTagVar = 0;
   JetInfo[iJetColl].nTrkTagVarCSV = 0;
+  JetInfo[iJetColl].NegnTrkTagVarCSV = 0;
   JetInfo[iJetColl].nTrkEtaRelTagVarCSV = 0;
+  JetInfo[iJetColl].NegnTrkEtaRelTagVarCSV = 0;
   JetInfo[iJetColl].nTrkCTagVar = 0;
   JetInfo[iJetColl].nTrkEtaRelCTagVar = 0;
   JetInfo[iJetColl].nLeptons = 0;  
@@ -1975,7 +1984,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     // Get all TagInfo pointers
     const IPTagInfo *ipTagInfo = toIPTagInfo(*pjet,ipTagInfos_);
     const SVTagInfo *svTagInfo = toSVTagInfo(*pjet,svTagInfos_);
-    const SVTagInfo *svNegTagInfo = toSVTagInfo(*pjet,svNegTagInfos_);
+    // const SVTagInfo *svNegTagInfo = toSVTagInfo(*pjet,svNegTagInfos_);
     const reco::CandSoftLeptonTagInfo *softPFMuTagInfo = pjet->tagInfoCandSoftLepton(softPFMuonTagInfos_.c_str());
     const reco::CandSoftLeptonTagInfo *softPFElTagInfo = pjet->tagInfoCandSoftLepton(softPFElectronTagInfos_.c_str());
     const reco::BoostedDoubleSVTagInfo *bdsvTagInfo = nullptr;
@@ -2673,6 +2682,14 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     float DeepFlavourC    = -10.;
     float DeepFlavourUDS  = -10.;
     float DeepFlavourG    = -10.;
+
+    float DeepFlavourBN    = -10.;
+    float DeepFlavourBBN   = -10.;
+    float DeepFlavourLepBN = -10.;
+    float DeepFlavourCN    = -10.;
+    float DeepFlavourUDSN  = -10.;
+    float DeepFlavourGN    = -10.;
+
 		if(deepFlavourJetTags_.size()) {
 			DeepFlavourB    = pjet->bDiscriminator((deepFlavourJetTags_+":probb"   ).c_str());
 			DeepFlavourBB   = pjet->bDiscriminator((deepFlavourJetTags_+":probbb"   ).c_str()); 
@@ -2681,6 +2698,17 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 			DeepFlavourUDS  = pjet->bDiscriminator((deepFlavourJetTags_+":probuds").c_str());
 			DeepFlavourG    = pjet->bDiscriminator((deepFlavourJetTags_+":probg").c_str());
 			}
+
+		if(deepFlavourNegJetTags_.size()) {
+			DeepFlavourBN    = pjet->bDiscriminator((deepFlavourNegJetTags_+":probb"   ).c_str());
+			DeepFlavourBBN   = pjet->bDiscriminator((deepFlavourNegJetTags_+":probbb"   ).c_str()); 
+			DeepFlavourLepBN = pjet->bDiscriminator((deepFlavourNegJetTags_+":problepb"   ).c_str());
+			DeepFlavourCN    = pjet->bDiscriminator((deepFlavourNegJetTags_+":probc"   ).c_str());
+			DeepFlavourUDSN  = pjet->bDiscriminator((deepFlavourNegJetTags_+":probuds").c_str());
+			DeepFlavourGN    = pjet->bDiscriminator((deepFlavourNegJetTags_+":probg").c_str());
+			}
+
+
 
     float DeepCSVb   = (deepCSVBJetTags_.size()) ? pjet->bDiscriminator((deepCSVBJetTags_+":probb"   ).c_str()) : -10;
     float DeepCSVc   = (deepCSVBJetTags_.size()) ? pjet->bDiscriminator((deepCSVBJetTags_+":probc"   ).c_str()) : -10;
@@ -2738,6 +2766,17 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     JetInfo[iJetColl].Jet_DeepFlavourUDS[JetInfo[iJetColl].nJet]  = DeepFlavourUDS ;
     JetInfo[iJetColl].Jet_DeepFlavourG[JetInfo[iJetColl].nJet]    = DeepFlavourG   ;
 
+    JetInfo[iJetColl].Jet_DeepFlavourBDiscN[JetInfo[iJetColl].nJet]     = DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN;
+    JetInfo[iJetColl].Jet_DeepFlavourBN[JetInfo[iJetColl].nJet]    = DeepFlavourBN   ;
+    JetInfo[iJetColl].Jet_DeepFlavourBBN[JetInfo[iJetColl].nJet]   = DeepFlavourBBN  ;
+    JetInfo[iJetColl].Jet_DeepFlavourLEPBN[JetInfo[iJetColl].nJet] = DeepFlavourLepBN;
+    JetInfo[iJetColl].Jet_DeepFlavourCN[JetInfo[iJetColl].nJet]    = DeepFlavourCN   ;
+    JetInfo[iJetColl].Jet_DeepFlavourUDSN[JetInfo[iJetColl].nJet]  = DeepFlavourUDSN ;
+    JetInfo[iJetColl].Jet_DeepFlavourGN[JetInfo[iJetColl].nJet]    = DeepFlavourGN   ;
+
+
+
+
     JetInfo[iJetColl].Jet_DeepCSVBDisc[JetInfo[iJetColl].nJet]   = DeepCSVb + DeepCSVbb  ;
     JetInfo[iJetColl].Jet_DeepCSVBDiscN[JetInfo[iJetColl].nJet]  = DeepCSVbN + DeepCSVbbN;
     JetInfo[iJetColl].Jet_DeepCSVBDiscP[JetInfo[iJetColl].nJet]  = DeepCSVbP + DeepCSVbbP;
@@ -2793,6 +2832,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     {
       reco::TaggingVariableList ipVars = ipTagInfo->taggingVariables();
       reco::TaggingVariableList svVars = svTagInfo->taggingVariables();
+      
       int nTracks = ipTagInfo->selectedTracks().size();
       int nSVs = svTagInfo->nVertices();
 
@@ -2810,10 +2850,9 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].TagVar_photonMultiplicity[JetInfo[iJetColl].nJet]          = pjet->photonMultiplicity();
       JetInfo[iJetColl].TagVar_electronMultiplicity[JetInfo[iJetColl].nJet]        = pjet->electronMultiplicity();
       JetInfo[iJetColl].TagVar_muonMultiplicity[JetInfo[iJetColl].nJet]            = pjet->muonMultiplicity();
-
       // per jet per track
       JetInfo[iJetColl].Jet_nFirstTrkTagVar[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkTagVar;
-
+      
       std::vector<float> tagValList = ipVars.getList(reco::btau::trackMomentum,false);
       if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVar_trackMomentum[JetInfo[iJetColl].nTrkTagVar] );
       tagValList = ipVars.getList(reco::btau::trackEta,false);
@@ -2911,12 +2950,20 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     if ( storeCSVTagVariables )
     {
       std::vector<const reco::BaseTagInfo*>  baseTagInfos;
+      if(!(pjet->hasTagInfo(deepCSVNegTagInfos_))) {
+	std::stringstream stream;
+        for(auto &lab : pjet->tagInfoLabels())
+	  stream << lab << ", ";
+        throw cms::Exception("ValueError") << "There is no tagInfo embedded in the jet labelled: " << deepCSVNegTagInfos_ <<
+	  ". The available ones are: " << stream.str() << std::endl;
+      }
+      const reco::ShallowTagInfo* tagInfo2 = dynamic_cast<const reco::ShallowTagInfo*>(pjet->tagInfo(deepCSVNegTagInfos_));
       JetTagComputer::TagInfoHelper helper(baseTagInfos);
       baseTagInfos.push_back( ipTagInfo );
       baseTagInfos.push_back( svTagInfo );
       // TaggingVariables
       reco::TaggingVariableList vars = computer->taggingVariables(helper);
-
+      reco::TaggingVariableList vars1 = tagInfo2->taggingVariables();
       // per jet
       JetInfo[iJetColl].TagVarCSV_trackJetPt[JetInfo[iJetColl].nJet]                  = ( vars.checkTag(reco::btau::trackJetPt) ? vars.get(reco::btau::trackJetPt) : -9999 );
       JetInfo[iJetColl].TagVarCSV_vertexCategory[JetInfo[iJetColl].nJet]              = ( vars.checkTag(reco::btau::vertexCategory) ? vars.get(reco::btau::vertexCategory) : -9999 );
@@ -2927,6 +2974,17 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].TagVarCSV_trackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip2dSigAboveCharm) ? vars.get(reco::btau::trackSip2dSigAboveCharm) : -9999 );
       JetInfo[iJetColl].TagVarCSV_trackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip3dValAboveCharm) ? vars.get(reco::btau::trackSip3dValAboveCharm) : -9999 );
       JetInfo[iJetColl].TagVarCSV_trackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars.checkTag(reco::btau::trackSip3dSigAboveCharm) ? vars.get(reco::btau::trackSip3dSigAboveCharm) : -9999 );
+
+
+      JetInfo[iJetColl].TagVarCSV_NegtrackJetPt[JetInfo[iJetColl].nJet]                  = ( vars1.checkTag(reco::btau::trackJetPt) ? vars1.get(reco::btau::trackJetPt) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegvertexCategory[JetInfo[iJetColl].nJet]              = ( vars1.checkTag(reco::btau::vertexCategory) ? vars1.get(reco::btau::vertexCategory) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegjetNSecondaryVertices[JetInfo[iJetColl].nJet]       = ( vars1.checkTag(reco::btau::jetNSecondaryVertices) ? vars1.get(reco::btau::jetNSecondaryVertices) : 0 );
+      JetInfo[iJetColl].TagVarCSV_NegtrackSumJetEtRatio[JetInfo[iJetColl].nJet]          = ( vars1.checkTag(reco::btau::trackSumJetEtRatio) ? vars1.get(reco::btau::trackSumJetEtRatio) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegtrackSumJetDeltaR[JetInfo[iJetColl].nJet]           = ( vars1.checkTag(reco::btau::trackSumJetDeltaR) ? vars1.get(reco::btau::trackSumJetDeltaR) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegtrackSip2dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars1.checkTag(reco::btau::trackSip2dValAboveCharm) ? vars1.get(reco::btau::trackSip2dValAboveCharm) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegtrackSip2dSigAboveCharm[JetInfo[iJetColl].nJet]   = ( vars1.checkTag(reco::btau::trackSip2dSigAboveCharm) ? vars1.get(reco::btau::trackSip2dSigAboveCharm) : -9999);
+      JetInfo[iJetColl].TagVarCSV_NegtrackSip3dValAboveCharm[JetInfo[iJetColl].nJet]     = ( vars1.checkTag(reco::btau::trackSip3dValAboveCharm) ? vars1.get(reco::btau::trackSip3dValAboveCharm) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegtrackSip3dSigAboveCharm[JetInfo[iJetColl].nJet]     = ( vars1.checkTag(reco::btau::trackSip3dSigAboveCharm) ? vars1.get(reco::btau::trackSip3dSigAboveCharm) : -9999 );
       JetInfo[iJetColl].TagVarCSV_vertexMass[JetInfo[iJetColl].nJet]                  = ( vars.checkTag(reco::btau::vertexMass) ? vars.get(reco::btau::vertexMass) : -9999 );
       JetInfo[iJetColl].TagVarCSV_vertexNTracks[JetInfo[iJetColl].nJet]               = ( vars.checkTag(reco::btau::vertexNTracks) ? vars.get(reco::btau::vertexNTracks) : 0 );
       JetInfo[iJetColl].TagVarCSV_vertexEnergyRatio[JetInfo[iJetColl].nJet]           = ( vars.checkTag(reco::btau::vertexEnergyRatio) ? vars.get(reco::btau::vertexEnergyRatio) : -9999 );
@@ -2935,6 +2993,17 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       JetInfo[iJetColl].TagVarCSV_flightDistance2dSig[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance2dSig) ? vars.get(reco::btau::flightDistance2dSig) : -9999 );
       JetInfo[iJetColl].TagVarCSV_flightDistance3dVal[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance3dVal) ? vars.get(reco::btau::flightDistance3dVal) : -9999 );
       JetInfo[iJetColl].TagVarCSV_flightDistance3dSig[JetInfo[iJetColl].nJet]         = ( vars.checkTag(reco::btau::flightDistance3dSig) ? vars.get(reco::btau::flightDistance3dSig) : -9999 );
+
+      JetInfo[iJetColl].TagVarCSV_NegvertexMass[JetInfo[iJetColl].nJet]                  = ( vars1.checkTag(reco::btau::vertexMass) ? vars1.get(reco::btau::vertexMass) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegvertexNTracks[JetInfo[iJetColl].nJet]               = ( vars1.checkTag(reco::btau::vertexNTracks) ? vars1.get(reco::btau::vertexNTracks) : 0 );
+      JetInfo[iJetColl].TagVarCSV_NegvertexEnergyRatio[JetInfo[iJetColl].nJet]           = ( vars1.checkTag(reco::btau::vertexEnergyRatio) ? vars1.get(reco::btau::vertexEnergyRatio) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegvertexJetDeltaR[JetInfo[iJetColl].nJet]             = ( vars1.checkTag(reco::btau::vertexJetDeltaR) ? vars1.get(reco::btau::vertexJetDeltaR) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegflightDistance2dVal[JetInfo[iJetColl].nJet]         = ( vars1.checkTag(reco::btau::flightDistance2dVal) ? vars1.get(reco::btau::flightDistance2dVal) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegflightDistance2dSig[JetInfo[iJetColl].nJet]         = ( vars1.checkTag(reco::btau::flightDistance2dSig) ? vars1.get(reco::btau::flightDistance2dSig) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegflightDistance3dVal[JetInfo[iJetColl].nJet]         = ( vars1.checkTag(reco::btau::flightDistance3dVal) ? vars1.get(reco::btau::flightDistance3dVal) : -9999 );
+      JetInfo[iJetColl].TagVarCSV_NegflightDistance3dSig[JetInfo[iJetColl].nJet]         = ( vars1.checkTag(reco::btau::flightDistance3dSig) ? vars1.get(reco::btau::flightDistance3dSig) : -9999 );
+
+
 
       // per jet per track
       JetInfo[iJetColl].Jet_nFirstTrkTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkTagVarCSV;
@@ -2974,8 +3043,53 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       tagValList = vars.getList(reco::btau::trackJetDistSig,false);
       if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_trackJetDistSig[JetInfo[iJetColl].nTrkTagVarCSV] );
 
+      JetInfo[iJetColl].Jet_NegnFirstTrkTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].NegnTrkTagVarCSV;
+      tagValList = vars1.getList(reco::btau::trackSip2dSig,false);
+      JetInfo[iJetColl].TagVarCSV_NegjetNTracks[JetInfo[iJetColl].nJet] = tagValList.size();
+
+      tagValList = vars1.getList(reco::btau::trackMomentum,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackMomentum[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackEta,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackEta[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackPhi,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackPhi[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackPtRel,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackPtRel[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackPPar,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackPPar[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackDeltaR,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackDeltaR[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackPtRatio,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackPtRatio[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackPParRatio,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackPParRatio[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackSip2dVal,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackSip2dVal[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackSip2dSig,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackSip2dSig[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackSip3dVal,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackSip3dVal[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackSip3dSig,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackSip3dSig[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackDecayLenVal,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackDecayLenVal[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackDecayLenSig,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackDecayLenSig[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackJetDistVal,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackJetDistVal[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+      tagValList = vars1.getList(reco::btau::trackJetDistSig,false);
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackJetDistSig[JetInfo[iJetColl].NegnTrkTagVarCSV] );
+
+
+
+
+
       JetInfo[iJetColl].nTrkTagVarCSV += JetInfo[iJetColl].TagVarCSV_jetNTracks[JetInfo[iJetColl].nJet];
       JetInfo[iJetColl].Jet_nLastTrkTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkTagVarCSV;
+
+      JetInfo[iJetColl].NegnTrkTagVarCSV += JetInfo[iJetColl].TagVarCSV_NegjetNTracks[JetInfo[iJetColl].nJet];
+      JetInfo[iJetColl].Jet_NegnLastTrkTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].NegnTrkTagVarCSV;
+
       //---------------------------
       JetInfo[iJetColl].Jet_nFirstTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkEtaRelTagVarCSV;
       tagValList = vars.getList(reco::btau::trackEtaRel,false);
@@ -2985,6 +3099,18 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 
       JetInfo[iJetColl].nTrkEtaRelTagVarCSV += JetInfo[iJetColl].TagVarCSV_jetNTracksEtaRel[JetInfo[iJetColl].nJet];
       JetInfo[iJetColl].Jet_nLastTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].nTrkEtaRelTagVarCSV;
+
+
+      JetInfo[iJetColl].Jet_NegnFirstTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].NegnTrkEtaRelTagVarCSV;
+      tagValList = vars1.getList(reco::btau::trackEtaRel,false);
+      JetInfo[iJetColl].TagVarCSV_NegjetNTracksEtaRel[JetInfo[iJetColl].nJet] = tagValList.size();
+
+      if(tagValList.size()>0) std::copy( tagValList.begin(), tagValList.end(), &JetInfo[iJetColl].TagVarCSV_NegtrackEtaRel[JetInfo[iJetColl].NegnTrkEtaRelTagVarCSV] );
+
+      JetInfo[iJetColl].NegnTrkEtaRelTagVarCSV += JetInfo[iJetColl].TagVarCSV_NegjetNTracksEtaRel[JetInfo[iJetColl].nJet];
+      JetInfo[iJetColl].Jet_NegnLastTrkEtaRelTagVarCSV[JetInfo[iJetColl].nJet] = JetInfo[iJetColl].NegnTrkEtaRelTagVarCSV;
+
+
       
     }
 
@@ -3491,7 +3617,7 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       }
     }
 
-    const Tracks svxNegtracks( svNegTagInfo->vertexTracks(0) );
+    const Tracks svxNegtracks( svTagInfo->vertexTracks(0) );
 
     if ( useTrackHistory_ && !isData_ ) {
       for (unsigned int i=0; i<svxNegtracks.size(); ++i) {
