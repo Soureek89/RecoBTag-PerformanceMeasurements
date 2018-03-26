@@ -35,7 +35,7 @@ class JetInfoBranches {
     float Jet_Mass4N[nMaxJets_];
     float Jet_Mass4P[nMaxJets_];
 
-		float Jet_DeepFlavourBDisc[nMaxJets_]   ;
+    float Jet_DeepFlavourBDisc[nMaxJets_]   ;
     float Jet_DeepFlavourCvsLDisc[nMaxJets_];
     float Jet_DeepFlavourCvsBDisc[nMaxJets_];
     float Jet_DeepFlavourB[nMaxJets_]	      ;
@@ -44,6 +44,18 @@ class JetInfoBranches {
     float Jet_DeepFlavourC[nMaxJets_]			  ;
     float Jet_DeepFlavourUDS[nMaxJets_]		  ;
     float Jet_DeepFlavourG[nMaxJets_]       ;
+
+
+   float Jet_DeepFlavourBDiscN[nMaxJets_]   ;
+    float Jet_DeepFlavourCvsLDiscN[nMaxJets_];
+    float Jet_DeepFlavourCvsBDiscN[nMaxJets_];
+    float Jet_DeepFlavourBN[nMaxJets_]	      ;
+    float Jet_DeepFlavourBBN[nMaxJets_]		  ;
+    float Jet_DeepFlavourLEPBN[nMaxJets_]	  ;
+    float Jet_DeepFlavourCN[nMaxJets_]			  ;
+    float Jet_DeepFlavourUDSN[nMaxJets_]		  ;
+    float Jet_DeepFlavourGN[nMaxJets_]       ;
+
 
     float Jet_DeepCSVBDisc[nMaxJets_]  ;
     float Jet_DeepCSVBDiscN[nMaxJets_]  ;
@@ -195,6 +207,12 @@ class JetInfoBranches {
     int   Jet_nLastTrkTagVarCSV[nMaxJets_];
     int   Jet_nFirstTrkEtaRelTagVarCSV[nMaxJets_];
     int   Jet_nLastTrkEtaRelTagVarCSV[nMaxJets_];
+    int   Jet_NegnFirstTrkTagVarCSV[nMaxJets_];
+    int   Jet_NegnLastTrkTagVarCSV[nMaxJets_];
+    int   Jet_NegnFirstTrkEtaRelTagVarCSV[nMaxJets_];
+    int   Jet_NegnLastTrkEtaRelTagVarCSV[nMaxJets_];
+
+
 
     int   nTrack;
     float Track_dxy[nMaxTrk_];
@@ -413,6 +431,30 @@ class JetInfoBranches {
     float TagVarCSV_flightDistance2dSig[nMaxJets_];                  // transverse distance significance between primary and secondary vertex
     float TagVarCSV_flightDistance3dVal[nMaxJets_];                  // distance between primary and secondary vertex
     float TagVarCSV_flightDistance3dSig[nMaxJets_];                  // distance significance between primary and secondary vertex
+
+
+
+    float TagVarCSV_NegtrackJetPt[nMaxJets_];                           // track-based jet transverse momentum
+    float TagVarCSV_NegjetNTracks[nMaxJets_];                           // tracks associated to jet
+    float TagVarCSV_NegjetNTracksEtaRel[nMaxJets_];                     // tracks associated to jet for which trackEtaRel is calculated
+    float TagVarCSV_NegtrackSumJetEtRatio[nMaxJets_];                   // ratio of track sum transverse energy over jet energy
+    float TagVarCSV_NegtrackSumJetDeltaR[nMaxJets_];                    // pseudoangular distance between jet axis and track fourvector sum
+    float TagVarCSV_NegtrackSip2dValAboveCharm[nMaxJets_];              // track 2D signed impact parameter of first track lifting mass above charm
+    float TagVarCSV_NegtrackSip2dSigAboveCharm[nMaxJets_];              // track 2D signed impact parameter significance of first track lifting mass above charm
+    float TagVarCSV_NegtrackSip3dValAboveCharm[nMaxJets_];              // track 3D signed impact parameter of first track lifting mass above charm
+    float TagVarCSV_NegtrackSip3dSigAboveCharm[nMaxJets_];              // track 3D signed impact parameter significance of first track lifting mass above charm
+    float TagVarCSV_NegvertexCategory[nMaxJets_];                       // category of secondary vertex (Reco, Pseudo, No)
+    float TagVarCSV_NegjetNSecondaryVertices[nMaxJets_];                // number of reconstructed possible secondary vertices in jet
+    float TagVarCSV_NegvertexMass[nMaxJets_];                           // mass of track sum at secondary vertex
+    float TagVarCSV_NegvertexNTracks[nMaxJets_];                        // number of tracks at secondary vertex
+    float TagVarCSV_NegvertexEnergyRatio[nMaxJets_];                    // ratio of energy at secondary vertex over total energy
+    float TagVarCSV_NegvertexJetDeltaR[nMaxJets_];                      // pseudoangular distance between jet axis and secondary vertex direction
+    float TagVarCSV_NegflightDistance2dVal[nMaxJets_];                  // transverse distance between primary and secondary vertex
+    float TagVarCSV_NegflightDistance2dSig[nMaxJets_];                  // transverse distance significance between primary and secondary vertex
+    float TagVarCSV_NegflightDistance3dVal[nMaxJets_];                  // distance between primary and secondary vertex
+    float TagVarCSV_NegflightDistance3dSig[nMaxJets_];                  // distance significance between primary and secondary vertex
+
+
     // per jet per track
     int   nTrkTagVarCSV;
     int   nTrkEtaRelTagVarCSV;
@@ -433,6 +475,28 @@ class JetInfoBranches {
     float TagVarCSV_trackJetDistVal[nMaxTrk_];                       // minimum track approach distance to jet axis
     float TagVarCSV_trackJetDistSig[nMaxTrk_];                       // minimum track approach distance to jet axis significance
     float TagVarCSV_trackEtaRel[nMaxTrk_];                           // track pseudorapidity, relative to the jet axis
+
+    int   NegnTrkTagVarCSV;
+    int   NegnTrkEtaRelTagVarCSV;
+    float TagVarCSV_NegtrackMomentum[nMaxTrk_];                         // track momentum
+    float TagVarCSV_NegtrackEta[nMaxTrk_];                              // track pseudorapidity
+    float TagVarCSV_NegtrackPhi[nMaxTrk_];                              // track polar angle
+    float TagVarCSV_NegtrackPtRel[nMaxTrk_];                            // track transverse momentum, relative to the jet axis
+    float TagVarCSV_NegtrackPPar[nMaxTrk_];                             // track parallel momentum, along the jet axis
+    float TagVarCSV_NegtrackDeltaR[nMaxTrk_];                           // track pseudoangular distance from the jet axis
+    float TagVarCSV_NegtrackPtRatio[nMaxTrk_];                          // track transverse momentum, relative to the jet axis, normalized to its energy
+    float TagVarCSV_NegtrackPParRatio[nMaxTrk_];                        // track parallel momentum, along the jet axis, normalized to its energy
+    float TagVarCSV_NegtrackSip2dVal[nMaxTrk_];                         // track 2D signed impact parameter
+    float TagVarCSV_NegtrackSip2dSig[nMaxTrk_];                         // track 2D signed impact parameter significance
+    float TagVarCSV_NegtrackSip3dVal[nMaxTrk_];                         // track 3D signed impact parameter
+    float TagVarCSV_NegtrackSip3dSig[nMaxTrk_];                         // track 3D signed impact parameter significance
+    float TagVarCSV_NegtrackDecayLenVal[nMaxTrk_];                      // track decay length
+    float TagVarCSV_NegtrackDecayLenSig[nMaxTrk_];                      // track decay length significance
+    float TagVarCSV_NegtrackJetDistVal[nMaxTrk_];                       // minimum track approach distance to jet axis
+    float TagVarCSV_NegtrackJetDistSig[nMaxTrk_];                       // minimum track approach distance to jet axis significance
+    float TagVarCSV_NegtrackEtaRel[nMaxTrk_];                           // track pseudorapidity, relative to the jet axis
+
+
 
     //C tag TaggingVariables
     int   Jet_nFirstTrkCTagVar[nMaxJets_];
@@ -523,6 +587,18 @@ class JetInfoBranches {
 		  tree->Branch((name+"Jet_DeepFlavourC"       ).c_str(), Jet_DeepFlavourC		    , (name+"Jet_DeepFlavourC["+name+"nJet]/F"       ).c_str());
 		  tree->Branch((name+"Jet_DeepFlavourUDS"     ).c_str(), Jet_DeepFlavourUDS	    , (name+"Jet_DeepFlavourUDS["+name+"nJet]/F"     ).c_str());
 		  tree->Branch((name+"Jet_DeepFlavourG"       ).c_str(), Jet_DeepFlavourG       , (name+"Jet_DeepFlavourG["+name+"nJet]/F"       ).c_str());
+
+
+		  tree->Branch((name+"Jet_DeepFlavourBDiscN"   ).c_str(), Jet_DeepFlavourBDiscN   , (name+"Jet_DeepFlavourBDiscN["+name+"nJet]/F"   ).c_str());
+		  tree->Branch((name+"Jet_DeepFlavourCvsLDiscN").c_str(), Jet_DeepFlavourCvsLDiscN, (name+"Jet_DeepFlavourCvsLDiscN["+name+"nJet]/F").c_str());
+		  tree->Branch((name+"Jet_DeepFlavourCvsBDiscN").c_str(), Jet_DeepFlavourCvsBDiscN, (name+"Jet_DeepFlavourCvsBDiscN["+name+"nJet]/F").c_str());
+		  tree->Branch((name+"Jet_DeepFlavourBN"       ).c_str(), Jet_DeepFlavourBN       , (name+"Jet_DeepFlavourBN["+name+"nJet]/F"       ).c_str());
+		  tree->Branch((name+"Jet_DeepFlavourBBN"      ).c_str(), Jet_DeepFlavourBBN	    , (name+"Jet_DeepFlavourBBN["+name+"nJet]/F"      ).c_str());
+		  tree->Branch((name+"Jet_DeepFlavourLEPBN"    ).c_str(), Jet_DeepFlavourLEPBN    , (name+"Jet_DeepFlavourLEPBN["+name+"nJet]/F"    ).c_str());
+		  tree->Branch((name+"Jet_DeepFlavourCN"       ).c_str(), Jet_DeepFlavourCN		    , (name+"Jet_DeepFlavourCN["+name+"nJet]/F"       ).c_str());
+		  tree->Branch((name+"Jet_DeepFlavourUDSN"     ).c_str(), Jet_DeepFlavourUDSN	    , (name+"Jet_DeepFlavourUDSN["+name+"nJet]/F"     ).c_str());
+		  tree->Branch((name+"Jet_DeepFlavourGN"       ).c_str(), Jet_DeepFlavourGN       , (name+"Jet_DeepFlavourGN["+name+"nJet]/F"       ).c_str());
+
 
 
 		  tree->Branch((name+"Jet_DeepCSVBDisc"	 ).c_str(), Jet_DeepCSVBDisc	,(name+"Jet_DeepCSVBDisc["+name+"nJet]/F").c_str());
@@ -875,6 +951,7 @@ class JetInfoBranches {
       tree->Branch((name+"TagVarCSV_trackSip2dSigAboveCharm").c_str()  ,TagVarCSV_trackSip2dSigAboveCharm  ,(name+"TagVarCSV_trackSip2dSigAboveCharm["+name+"nJet]/F").c_str() );
       tree->Branch((name+"TagVarCSV_trackSip3dValAboveCharm").c_str()  ,TagVarCSV_trackSip3dValAboveCharm  ,(name+"TagVarCSV_trackSip3dValAboveCharm["+name+"nJet]/F").c_str() );
       tree->Branch((name+"TagVarCSV_trackSip3dSigAboveCharm").c_str()  ,TagVarCSV_trackSip3dSigAboveCharm  ,(name+"TagVarCSV_trackSip3dSigAboveCharm["+name+"nJet]/F").c_str() );
+
       tree->Branch((name+"TagVarCSV_vertexCategory").c_str()           ,TagVarCSV_vertexCategory           ,(name+"TagVarCSV_vertexCategory["+name+"nJet]/F").c_str()          );
       tree->Branch((name+"TagVarCSV_jetNSecondaryVertices").c_str()    ,TagVarCSV_jetNSecondaryVertices    ,(name+"TagVarCSV_jetNSecondaryVertices["+name+"nJet]/F").c_str()   );
       tree->Branch((name+"TagVarCSV_vertexMass").c_str()               ,TagVarCSV_vertexMass               ,(name+"TagVarCSV_vertexMass["+name+"nJet]/F").c_str()              );
@@ -905,6 +982,58 @@ class JetInfoBranches {
       tree->Branch((name+"TagVarCSV_trackJetDistVal").c_str()   ,TagVarCSV_trackJetDistVal   ,(name+"TagVarCSV_trackJetDistVal["+name+"nTrkTagVarCSV]/F").c_str()   );
       tree->Branch((name+"TagVarCSV_trackJetDistSig").c_str()   ,TagVarCSV_trackJetDistSig   ,(name+"TagVarCSV_trackJetDistSig["+name+"nTrkTagVarCSV]/F").c_str()   );
       tree->Branch((name+"TagVarCSV_trackEtaRel").c_str()       ,TagVarCSV_trackEtaRel       ,(name+"TagVarCSV_trackEtaRel["+name+"nTrkEtaRelTagVarCSV]/F").c_str() );
+
+
+
+      tree->Branch((name+"Jet_NegnFirstTrkTagVarCSV").c_str()        ,Jet_NegnFirstTrkTagVarCSV        ,(name+"Jet_NegnFirstTrkTagVarCSV["+name+"nJet]/I").c_str()       );
+      tree->Branch((name+"Jet_NegnLastTrkTagVarCSV").c_str()         ,Jet_NegnLastTrkTagVarCSV         ,(name+"Jet_NegnLastTrkTagVarCSV["+name+"nJet]/I").c_str()        );
+      tree->Branch((name+"Jet_NegnFirstTrkEtaRelTagVarCSV").c_str()  ,Jet_NegnFirstTrkEtaRelTagVarCSV  ,(name+"Jet_NegnFirstTrkEtaRelTagVarCSV["+name+"nJet]/I").c_str() );
+      tree->Branch((name+"Jet_NegnLastTrkEtaRelTagVarCSV").c_str()   ,Jet_NegnLastTrkEtaRelTagVarCSV   ,(name+"Jet_NegnLastEtaRelTrackCSV["+name+"nJet]/I").c_str()      );
+
+      tree->Branch((name+"TagVarCSV_NegtrackJetPt").c_str()               ,TagVarCSV_NegtrackJetPt               ,(name+"TagVarCSV_NegtrackJetPt["+name+"nJet]/F").c_str()              );
+      tree->Branch((name+"TagVarCSV_NegjetNTracks").c_str()               ,TagVarCSV_NegjetNTracks               ,(name+"TagVarCSV_NegjetNTracks["+name+"nJet]/F").c_str()              );
+      tree->Branch((name+"TagVarCSV_NegjetNTracksEtaRel").c_str()         ,TagVarCSV_NegjetNTracksEtaRel         ,(name+"TagVarCSV_NegjetNTracksEtaRel["+name+"nJet]/F").c_str()        );
+      tree->Branch((name+"TagVarCSV_NegtrackSumJetEtRatio").c_str()       ,TagVarCSV_NegtrackSumJetEtRatio       ,(name+"TagVarCSV_NegtrackSumJetEtRatio["+name+"nJet]/F").c_str()      );
+      tree->Branch((name+"TagVarCSV_NegtrackSumJetDeltaR").c_str()        ,TagVarCSV_NegtrackSumJetDeltaR        ,(name+"TagVarCSV_NegtrackSumJetDeltaR["+name+"nJet]/F").c_str()       );
+      tree->Branch((name+"TagVarCSV_NegtrackSip2dValAboveCharm").c_str()  ,TagVarCSV_NegtrackSip2dValAboveCharm  ,(name+"TagVarCSV_NegtrackSip2dValAboveCharm["+name+"nJet]/F").c_str() );
+      tree->Branch((name+"TagVarCSV_NegtrackSip2dSigAboveCharm").c_str()  ,TagVarCSV_NegtrackSip2dSigAboveCharm  ,(name+"TagVarCSV_NegtrackSip2dSigAboveCharm["+name+"nJet]/F").c_str() );
+      tree->Branch((name+"TagVarCSV_NegtrackSip3dValAboveCharm").c_str()  ,TagVarCSV_NegtrackSip3dValAboveCharm  ,(name+"TagVarCSV_NegtrackSip3dValAboveCharm["+name+"nJet]/F").c_str() );
+      tree->Branch((name+"TagVarCSV_NegtrackSip3dSigAboveCharm").c_str()  ,TagVarCSV_NegtrackSip3dSigAboveCharm  ,(name+"TagVarCSV_NegtrackSip3dSigAboveCharm["+name+"nJet]/F").c_str() );
+
+      tree->Branch((name+"TagVarCSV_NegvertexCategory").c_str()           ,TagVarCSV_NegvertexCategory           ,(name+"TagVarCSV_NegvertexCategory["+name+"nJet]/F").c_str()          );
+      tree->Branch((name+"TagVarCSV_NegjetNSecondaryVertices").c_str()    ,TagVarCSV_NegjetNSecondaryVertices    ,(name+"TagVarCSV_NegjetNSecondaryVertices["+name+"nJet]/F").c_str()   );
+      tree->Branch((name+"TagVarCSV_NegvertexMass").c_str()               ,TagVarCSV_NegvertexMass               ,(name+"TagVarCSV_NegvertexMass["+name+"nJet]/F").c_str()              );
+      tree->Branch((name+"TagVarCSV_NegvertexNTracks").c_str()            ,TagVarCSV_NegvertexNTracks            ,(name+"TagVarCSV_NegvertexNTracks["+name+"nJet]/F").c_str()           );
+      tree->Branch((name+"TagVarCSV_NegvertexEnergyRatio").c_str()        ,TagVarCSV_NegvertexEnergyRatio        ,(name+"TagVarCSV_NegvertexEnergyRatio["+name+"nJet]/F").c_str()       );
+      tree->Branch((name+"TagVarCSV_NegvertexJetDeltaR").c_str()          ,TagVarCSV_NegvertexJetDeltaR          ,(name+"TagVarCSV_NegvertexJetDeltaR["+name+"nJet]/F").c_str()         );
+      tree->Branch((name+"TagVarCSV_NegflightDistance2dVal").c_str()      ,TagVarCSV_NegflightDistance2dVal      ,(name+"TagVarCSV_NegflightDistance2dVal["+name+"nJet]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegflightDistance2dSig").c_str()      ,TagVarCSV_NegflightDistance2dSig      ,(name+"TagVarCSV_NegflightDistance2dSig["+name+"nJet]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegflightDistance3dVal").c_str()      ,TagVarCSV_NegflightDistance3dVal      ,(name+"TagVarCSV_NegflightDistance3dVal["+name+"nJet]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegflightDistance3dSig").c_str()      ,TagVarCSV_NegflightDistance3dSig      ,(name+"TagVarCSV_NegflightDistance3dSig["+name+"nJet]/F").c_str()     );
+
+      tree->Branch((name+"NegnTrkTagVarCSV").c_str()               ,&NegnTrkTagVarCSV              ,(name+"NegnTrkTagVarCSV/I").c_str()                                      );
+      tree->Branch((name+"NegnTrkEtaRelTagVarCSV").c_str()         ,&NegnTrkEtaRelTagVarCSV        ,(name+"NegnTrkEtaRelTagVarCSV/I").c_str()                                );
+      tree->Branch((name+"TagVarCSV_NegtrackMomentum").c_str()     ,TagVarCSV_NegtrackMomentum     ,(name+"TagVarCSV_NegtrackMomentum["+name+"nTrkTagVarCSV]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegtrackEta").c_str()          ,TagVarCSV_NegtrackEta          ,(name+"TagVarCSV_NegtrackEta["+name+"nTrkTagVarCSV]/F").c_str()          );
+      tree->Branch((name+"TagVarCSV_NegtrackPhi").c_str()          ,TagVarCSV_NegtrackPhi          ,(name+"TagVarCSV_NegtrackPhi["+name+"nTrkTagVarCSV]/F").c_str()          );
+      tree->Branch((name+"TagVarCSV_NegtrackPtRel").c_str()        ,TagVarCSV_NegtrackPtRel        ,(name+"TagVarCSV_NegtrackPtRel["+name+"nTrkTagVarCSV]/F").c_str()        );
+      tree->Branch((name+"TagVarCSV_NegtrackPPar").c_str()         ,TagVarCSV_NegtrackPPar         ,(name+"TagVarCSV_NegtrackPPar["+name+"nTrkTagVarCSV]/F").c_str()         );
+      tree->Branch((name+"TagVarCSV_NegtrackDeltaR").c_str()       ,TagVarCSV_NegtrackDeltaR       ,(name+"TagVarCSV_NegtrackDeltaR["+name+"nTrkTagVarCSV]/F").c_str()       );
+      tree->Branch((name+"TagVarCSV_NegtrackPtRatio").c_str()      ,TagVarCSV_NegtrackPtRatio      ,(name+"TagVarCSV_NegtrackPtRatio["+name+"nTrkTagVarCSV]/F").c_str()      );
+      tree->Branch((name+"TagVarCSV_NegtrackPParRatio").c_str()    ,TagVarCSV_NegtrackPParRatio    ,(name+"TagVarCSV_NegtrackPParRatio["+name+"nTrkTagVarCSV]/F").c_str()    );
+      tree->Branch((name+"TagVarCSV_NegtrackSip2dVal").c_str()     ,TagVarCSV_NegtrackSip2dVal     ,(name+"TagVarCSV_NegtrackSip2dVal["+name+"nTrkTagVarCSV]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegtrackSip2dSig").c_str()     ,TagVarCSV_NegtrackSip2dSig     ,(name+"TagVarCSV_NegtrackSip2dSig["+name+"nTrkTagVarCSV]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegtrackSip3dVal").c_str()     ,TagVarCSV_NegtrackSip3dVal     ,(name+"TagVarCSV_NegtrackSip3dVal["+name+"nTrkTagVarCSV]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegtrackSip3dSig").c_str()     ,TagVarCSV_NegtrackSip3dSig     ,(name+"TagVarCSV_NegtrackSip3dSig["+name+"nTrkTagVarCSV]/F").c_str()     );
+      tree->Branch((name+"TagVarCSV_NegtrackDecayLenVal").c_str()  ,TagVarCSV_NegtrackDecayLenVal  ,(name+"TagVarCSV_NegtrackDecayLenVal["+name+"nTrkTagVarCSV]/F").c_str()  );
+      tree->Branch((name+"TagVarCSV_NegtrackDecayLenSig").c_str()  ,TagVarCSV_NegtrackDecayLenSig  ,(name+"TagVarCSV_NegtrackDecayLenSig["+name+"nTrkTagVarCSV]/F").c_str()  );
+      tree->Branch((name+"TagVarCSV_NegtrackJetDistVal").c_str()   ,TagVarCSV_NegtrackJetDistVal   ,(name+"TagVarCSV_NegtrackJetDistVal["+name+"nTrkTagVarCSV]/F").c_str()   );
+      tree->Branch((name+"TagVarCSV_NegtrackJetDistSig").c_str()   ,TagVarCSV_NegtrackJetDistSig   ,(name+"TagVarCSV_NegtrackJetDistSig["+name+"nTrkTagVarCSV]/F").c_str()   );
+      tree->Branch((name+"TagVarCSV_NegtrackEtaRel").c_str()       ,TagVarCSV_NegtrackEtaRel       ,(name+"TagVarCSV_NegtrackEtaRel["+name+"nTrkEtaRelTagVarCSV]/F").c_str() );
+
+
+
+
     }
 
     void RegisterCTagVarTree(TTree *tree, std::string name=""){
@@ -1376,6 +1505,10 @@ class JetInfoBranches {
       tree->SetBranchAddress((name+"TagVarCSV_trackSip2dSigAboveCharm").c_str()  ,TagVarCSV_trackSip2dSigAboveCharm );
       tree->SetBranchAddress((name+"TagVarCSV_trackSip3dValAboveCharm").c_str()  ,TagVarCSV_trackSip3dValAboveCharm );
       tree->SetBranchAddress((name+"TagVarCSV_trackSip3dSigAboveCharm").c_str()  ,TagVarCSV_trackSip3dSigAboveCharm );
+      tree->SetBranchAddress((name+"TagVarCSV_NegtrackSip2dValAboveCharm").c_str()  ,TagVarCSV_NegtrackSip2dValAboveCharm );
+      tree->SetBranchAddress((name+"TagVarCSV_NegtrackSip2dSigAboveCharm").c_str()  ,TagVarCSV_NegtrackSip2dSigAboveCharm );
+      tree->SetBranchAddress((name+"TagVarCSV_NegtrackSip3dValAboveCharm").c_str()  ,TagVarCSV_NegtrackSip3dValAboveCharm );
+      tree->SetBranchAddress((name+"TagVarCSV_NegtrackSip3dSigAboveCharm").c_str()  ,TagVarCSV_NegtrackSip3dSigAboveCharm );
       tree->SetBranchAddress((name+"TagVarCSV_vertexCategory").c_str()           ,TagVarCSV_vertexCategory          );
       tree->SetBranchAddress((name+"TagVarCSV_jetNSecondaryVertices").c_str()    ,TagVarCSV_jetNSecondaryVertices   );
       tree->SetBranchAddress((name+"TagVarCSV_vertexMass").c_str()               ,TagVarCSV_vertexMass              );
