@@ -115,7 +115,7 @@ options.register('miniAOD', True,
     VarParsing.varType.bool,
     "Running on miniAOD"
 )
-options.register('remakeAllDiscr', False,
+options.register('remakeAllDiscr', True,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "Remake all b-tag discriminator, including those already stored in MiniAOD"
@@ -266,6 +266,8 @@ options.register(
 	"skip N events"
 )
 
+SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",ignoreTotal = cms.untracked.int32(1) )
+
 ## 'maxEvents' is already registered by the Framework, changing default value
 options.setDefault('maxEvents', -1)
 
@@ -376,13 +378,14 @@ bTagInfos = [
     'pfImpactParameterTagInfos'
    ,'pfSecondaryVertexTagInfos'
    ,'pfInclusiveSecondaryVertexFinderTagInfos'
-   ,'pfSecondaryVertexNegativeTagInfos'
    ,'pfInclusiveSecondaryVertexFinderNegativeTagInfos'
+   ,'pfSecondaryVertexNegativeTagInfos'
+   ,'pfInclusiveSecondaryVertexFinderNegativeCvsLTagInfos'
    ,'softPFMuonsTagInfos'
    ,'softPFElectronsTagInfos'
    ,'pfInclusiveSecondaryVertexFinderCvsLTagInfos'
-   ,'pfInclusiveSecondaryVertexFinderNegativeCvsLTagInfos'
-	 ,'pfDeepFlavourTagInfos'
+   ,'pfDeepFlavourTagInfos'
+   ,'pfNegativeDeepFlavourTagInfos'
 ]
 bTagInfos_noDeepFlavour = bTagInfos[:-1]
 ## b-tag discriminators
@@ -418,7 +421,7 @@ bTagDiscriminatorsLegacy = set([
    ,'positiveCombinedMVAv2BJetTags'
 ])
 bTagDiscriminators = set([
-    'pfJetBProbabilityBJetTags'
+   'pfJetBProbabilityBJetTags'
    ,'pfJetProbabilityBJetTags'
    ,'pfPositiveOnlyJetBProbabilityBJetTags'
    ,'pfPositiveOnlyJetProbabilityBJetTags'
@@ -466,13 +469,21 @@ bTagDiscriminators = set([
   , 'pfPositiveDeepCSVJetTags:probb'   
   , 'pfPositiveDeepCSVJetTags:probc'   
   , 'pfPositiveDeepCSVJetTags:probbb'  
-	, 'pfDeepFlavourJetTags:probb'
+    #DeepFlavour, DISABLED FOR NOW
+  , 'pfDeepFlavourJetTags:probb'
   , 'pfDeepFlavourJetTags:probbb'
   , 'pfDeepFlavourJetTags:problepb'
   , 'pfDeepFlavourJetTags:probc'
   , 'pfDeepFlavourJetTags:probuds'
   , 'pfDeepFlavourJetTags:probg'
+  , 'pfNegativeDeepFlavourJetTags:probb'
+  , 'pfNegativeDeepFlavourJetTags:probbb'
+  , 'pfNegativeDeepFlavourJetTags:problepb'
+  , 'pfNegativeDeepFlavourJetTags:probc'
+  , 'pfNegativeDeepFlavourJetTags:probuds'
+  , 'pfNegativeDeepFlavourJetTags:probg'
 ])
+
 
 ## Legacy taggers not supported with MiniAOD
 if options.miniAOD and options.useLegacyTaggers:
@@ -1359,6 +1370,9 @@ if options.runFatJets:
 
 #-------------------------------------
 from RecoBTag.PerformanceMeasurements.BTagAnalyzer_cff import *
+
+
+
 process.btagana = bTagAnalyzer.clone()
 if options.useLegacyTaggers:
     process.btagana = bTagAnalyzerLegacy.clone()
@@ -1529,6 +1543,7 @@ if options.processStdAK4Jets and options.useTTbarFilter:
 #Trick to make it work in 9_1_X
 process.tsk = cms.Task()
 for mod in process.producers_().itervalues():
+
     process.tsk.add(mod)
 for mod in process.filters_().itervalues():
     process.tsk.add(mod)
@@ -1545,3 +1560,5 @@ process.p = cms.Path(
 del process.out
 
 open('pydump.py','w').write(process.dumpPython())
+
+#  LocalWords:  bTagInfos
