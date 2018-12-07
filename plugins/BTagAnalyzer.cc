@@ -309,6 +309,9 @@ private:
   std::string deepFlavourJetTags_;
   std::string deepFlavourNegJetTags_;
 
+  std::string deepFlavourPrunedJetTags_;
+  std::string deepFlavourPrunedNegJetTags_;
+
   std::string deepCSVBJetTags_;
   std::string deepCSVNegBJetTags_;
   std::string deepCSVPosBJetTags_;
@@ -640,6 +643,10 @@ BTagAnalyzerT<IPTI,VTX>::BTagAnalyzerT(const edm::ParameterSet& iConfig):
 
   deepFlavourJetTags_ = iConfig.getParameter<std::string>("deepFlavourJetTags");
   deepFlavourNegJetTags_ = iConfig.getParameter<std::string>("deepFlavourNegJetTags");
+
+  deepFlavourPrunedJetTags_ = iConfig.getParameter<std::string>("deepFlavourPrunedJetTags");
+  deepFlavourPrunedNegJetTags_ = iConfig.getParameter<std::string>("deepFlavourPrunedNegJetTags");
+
 
   deepCSVBJetTags_    = iConfig.getParameter<std::string>("deepCSVBJetTags");
   deepCSVNegBJetTags_ = iConfig.getParameter<std::string>("deepCSVNegBJetTags");
@@ -2703,6 +2710,37 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
       DeepFlavourGN    = pjet->bDiscriminator((deepFlavourNegJetTags_+":probg").c_str());
     }
 
+    float DeepFlavourPrunedB    = -10.;
+    float DeepFlavourPrunedBB   = -10.;
+    float DeepFlavourPrunedLepB = -10.;
+    float DeepFlavourPrunedC    = -10.;
+    float DeepFlavourPrunedUDS  = -10.;
+    float DeepFlavourPrunedG    = -10.;
+    if(deepFlavourPrunedJetTags_.size()) {
+      DeepFlavourPrunedB    = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probb"   ).c_str());
+      DeepFlavourPrunedBB   = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probbb"   ).c_str());
+      DeepFlavourPrunedLepB = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":problepb"   ).c_str());
+      DeepFlavourPrunedC    = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probc"   ).c_str());
+      DeepFlavourPrunedUDS  = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probuds").c_str());
+      DeepFlavourPrunedG    = pjet->bDiscriminator((deepFlavourPrunedJetTags_+":probg").c_str());
+    }
+
+    // Maybe set default value to -1000 in future, as this is the default returned by the bDiscriminator function if a tagger is not found there. (see http://cmslxr.fnal.gov/source/DataFormats/PatCandidates/src/Jet.cc#0377)
+    float DeepFlavourPrunedBN    = -10.;
+    float DeepFlavourPrunedBBN   = -10.;
+    float DeepFlavourPrunedLepBN = -10.;
+    float DeepFlavourPrunedCN    = -10.;
+    float DeepFlavourPrunedUDSN  = -10.;
+    float DeepFlavourPrunedGN    = -10.;
+    if(deepFlavourPrunedNegJetTags_.size()) {
+      DeepFlavourPrunedBN    = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probb"   ).c_str());
+      DeepFlavourPrunedBBN   = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probbb"   ).c_str());
+      DeepFlavourPrunedLepBN = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":problepb"   ).c_str());
+      DeepFlavourPrunedCN    = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probc"   ).c_str());
+      DeepFlavourPrunedUDSN  = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probuds").c_str());
+      DeepFlavourPrunedGN    = pjet->bDiscriminator((deepFlavourPrunedNegJetTags_+":probg").c_str());
+    }
+
     float DeepCSVb   = (deepCSVBJetTags_.size()) ? pjet->bDiscriminator((deepCSVBJetTags_+":probb"   ).c_str()) : -10;
     float DeepCSVc   = (deepCSVBJetTags_.size()) ? pjet->bDiscriminator((deepCSVBJetTags_+":probc"   ).c_str()) : -10;
     float DeepCSVl   = (deepCSVBJetTags_.size()) ? pjet->bDiscriminator((deepCSVBJetTags_+":probudsg").c_str()) : -10;
@@ -2750,9 +2788,9 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
 
     // Jet information
     //DeepFlavour discriminators
-    JetInfo[iJetColl].Jet_DeepFlavourBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourB < -5) ? DeepFlavourB + DeepFlavourBB + DeepFlavourLepB : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourCvsLDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourB < -5) ? DeepFlavourC/(DeepFlavourC + DeepFlavourUDS + DeepFlavourG) : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourCvsBDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourB < -5) ? DeepFlavourC/(DeepFlavourC + DeepFlavourB + DeepFlavourBB + DeepFlavourLepB) : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourB > -5) ? DeepFlavourB + DeepFlavourBB + DeepFlavourLepB : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourCvsLDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourB > -5) ? DeepFlavourC/(DeepFlavourC + DeepFlavourUDS + DeepFlavourG) : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourCvsBDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourB > -5) ? DeepFlavourC/(DeepFlavourC + DeepFlavourB + DeepFlavourBB + DeepFlavourLepB) : -10;
 
     //DeepFlavour probabilities
     JetInfo[iJetColl].Jet_DeepFlavourB[JetInfo[iJetColl].nJet]    = DeepFlavourB   ;
@@ -2763,9 +2801,28 @@ void BTagAnalyzerT<IPTI,VTX>::processJets(const edm::Handle<PatJetCollection>& j
     JetInfo[iJetColl].Jet_DeepFlavourG[JetInfo[iJetColl].nJet]    = DeepFlavourG   ;
 
     //DeepFlavour negative tags
-    JetInfo[iJetColl].Jet_DeepFlavourBDiscN[JetInfo[iJetColl].nJet]     = (DeepFlavourBN < -5) ? DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourCvsLDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN < -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourUDSN + DeepFlavourGN) : -10;
-    JetInfo[iJetColl].Jet_DeepFlavourCvsBDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN < -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN) : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourBDiscN[JetInfo[iJetColl].nJet]     = (DeepFlavourBN > -5) ? DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourCvsLDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN > -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourUDSN + DeepFlavourGN) : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourCvsBDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourBN > -5) ? DeepFlavourCN/(DeepFlavourCN + DeepFlavourBN + DeepFlavourBBN + DeepFlavourLepBN) : -10;
+
+    //DeepFlavourPruned discriminators
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedBDisc[JetInfo[iJetColl].nJet]     = (DeepFlavourPrunedB > -5) ? DeepFlavourPrunedB + DeepFlavourPrunedBB + DeepFlavourPrunedLepB : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsLDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedB > -5) ? DeepFlavourPrunedC/(DeepFlavourPrunedC + DeepFlavourPrunedUDS + DeepFlavourPrunedG) : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsBDisc[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedB > -5) ? DeepFlavourPrunedC/(DeepFlavourPrunedC + DeepFlavourPrunedB + DeepFlavourPrunedBB + DeepFlavourPrunedLepB) : -10;
+
+    //DeepFlavourPruned probabilities
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedB[JetInfo[iJetColl].nJet]    = DeepFlavourPrunedB   ;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedBB[JetInfo[iJetColl].nJet]   = DeepFlavourPrunedBB  ;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedLEPB[JetInfo[iJetColl].nJet] = DeepFlavourPrunedLepB;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedC[JetInfo[iJetColl].nJet]    = DeepFlavourPrunedC   ;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedUDS[JetInfo[iJetColl].nJet]  = DeepFlavourPrunedUDS ;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedG[JetInfo[iJetColl].nJet]    = DeepFlavourPrunedG   ;
+
+    //DeepFlavourPruned negative tags
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedBDiscN[JetInfo[iJetColl].nJet]     = (DeepFlavourPrunedBN > -5) ? DeepFlavourPrunedBN + DeepFlavourPrunedBBN + DeepFlavourPrunedLepBN : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsLDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedBN > -5) ? DeepFlavourPrunedCN/(DeepFlavourPrunedCN + DeepFlavourPrunedUDSN + DeepFlavourPrunedGN) : -10;
+    JetInfo[iJetColl].Jet_DeepFlavourPrunedCvsBDiscN[JetInfo[iJetColl].nJet]  = (DeepFlavourPrunedBN > -5) ? DeepFlavourPrunedCN/(DeepFlavourPrunedCN + DeepFlavourPrunedBN + DeepFlavourPrunedBBN + DeepFlavourPrunedLepBN) : -10;
+
 
     JetInfo[iJetColl].Jet_DeepCSVBDisc[JetInfo[iJetColl].nJet]   = DeepCSVb + DeepCSVbb  ;
     JetInfo[iJetColl].Jet_DeepCSVBDiscN[JetInfo[iJetColl].nJet]  = DeepCSVbN + DeepCSVbbN;
